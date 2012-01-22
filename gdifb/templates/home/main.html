@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 {% block content %}
 <style type='text/css'>
     #left_block{
@@ -17,11 +18,14 @@
     }
 
 </style>
-<div id=''>
+<div id='posts'>
     {% include "search/form.html" with form=form %}
-    {% include "posts/entries.html" with posts=posts short='1' show_permalink='1' show_parentlink='1' %}
+    {% include "posts/entries.html" with posts=posts short='1' show_permalink='1' show_parentlink='1' show_morelink='1' %}
+
 
 </div>
+<a href='#' id='more_posts'>Load More</a>
+
 {% comment %}
 <div id='right_block']
     statistic such as:
@@ -40,4 +44,23 @@
         all these link to more, let's put it in one page only, with anchor tag
 </div>
 {% endcomment %}
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function(){
+        offset = 0
+        $("#more_posts").click(function(){
+            posts_div = $("#posts");
+            $.get("{% url 'posts:list'%}?offset=" + (offset + 15), function(data){
+                posts_div.html(posts_div.html() + data);
+                offset += 15;
+            });
+            return false;
+        });
+
+    });
+
+</script>
+
 {% endblock %}

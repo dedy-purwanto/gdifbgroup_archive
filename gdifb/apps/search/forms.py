@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from archive.models import Post
 class SearchForm(forms.Form):
-    keyword = forms.CharField(required = False)
+    keyword = forms.CharField(required = True)
     def search(self):
         posts = Post.objects.all()
         keywords = self.cleaned_data['keyword'].split(' ')
@@ -14,6 +14,6 @@ class SearchForm(forms.Form):
             query |= Q(link__icontains = keyword)
             query |= Q(link_name__icontains = keyword)
             
-        posts = posts.filter(query)
+        posts = posts.filter(query).order_by('-date_created')
 
         return posts
