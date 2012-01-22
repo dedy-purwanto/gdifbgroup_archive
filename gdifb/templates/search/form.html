@@ -1,0 +1,5 @@
+{% load url from future %}
+<form method='GET' action='/'>
+    Search: {{form.keyword}}
+    {%csrf_token%}
+</form>

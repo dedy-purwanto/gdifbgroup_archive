@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Member, Post, Like
+from .models import Member, Post
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('id','member_id','name')
@@ -15,7 +15,3 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 
-class LikeAdmin(admin.ModelAdmin):
-    list_display = ('id','member','post', 'date_created')
-
-admin.site.register(Like, LikeAdmin)

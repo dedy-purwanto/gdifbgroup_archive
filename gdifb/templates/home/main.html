@@ -18,8 +18,8 @@
 
 </style>
 <div id=''>
-    [search form]<br />
-    {% include "posts/entries.html" with posts=posts short='1' %}
+    {% include "search/form.html" with form=form %}
+    {% include "posts/entries.html" with posts=posts short='1' show_permalink='1' show_parentlink='1' %}
 
 </div>
 {% comment %}

@@ -41,7 +41,7 @@
     </div>
     <div id='message'>
         {% if short %}
-        <a href='{% url 'posts:detail' post.pk %}'>{{post.message_short}}</a>
+        {{post.message_short}}
         {% else %}
         {{post.message}}
 
@@ -51,7 +51,20 @@
         {{post.date_created}}
     </span>
     <span id='stat'>
+        {% if post.comments.exists %}
         {{post.comments.all.count}} comments
-        {{post.num_likes}} likes
+        {% endif %}
+        {% if post.num_likes %}
+        {{post.num_likes}} likes 
+        {% endif %}
+        {% if post.parent and show_parentlink %}
+            <a href='{% url 'posts:detail' post.parent.pk%}'>Thread</a>
+        {% endif %}
+        {% if show_permalink %}
+        <a href='{% url 'posts:detail' post.pk%}'>View</a>
+        {% endif %}
+        {% if not post.parent and show_fbpostlink %}
+            <a href='http://www.facebook.com/groups/gamedevid/{{post.post_id}}'>Facebook Thread</a>
+        {% endif %}
     </span>
 </div>

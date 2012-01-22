@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% block title %}
+{{post.message}}
+
+{% endblock %}
 
 {% block content %}
-{% include "posts/entry.html" with post=post %}
+{% include "posts/entry.html" with post=post show_fbpostlink='1' show_parentlink='1' %}
 
 {% if post.comments.exists %}
-{% include "posts/entries.html" with posts=post.comments.all %}
+{% include "posts/entries.html" with posts=post.comments.all show_permalink='1' %}
 {% else %}
     No comments yet
 

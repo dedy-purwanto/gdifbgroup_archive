@@ -3,7 +3,7 @@ import simplejson
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
-from archive.models import Post, Member, Like
+from archive.models import Post, Member
 
 class Command(BaseCommand):
     #TODO: MOVE all this to settings
@@ -87,11 +87,11 @@ class Command(BaseCommand):
             post.num_likes = likes
             post.num_comments = comments
             post.save()
-            self.fetch_comments_and_likes(post)
+            self.fetch_comments(post)
 
         return post
 
-    def fetch_comments_and_likes(self, post):
+    def fetch_comments(self, post):
         self.stdout.write("Fetching commets for post %s \n" % post.post_id)
         url = "%s/%s_%s/comments?limit=5000&access_token=%s" % (self.BASE_URL, self.GROUP_ID, post.post_id, self.ACCESS_TOKEN)
         data = urllib2.urlopen(url).read()
@@ -102,46 +102,25 @@ class Command(BaseCommand):
                 for c in comments:
                     self.add_post(c, parent=post)
 
-        url = "%s/%s/?access_token=%s" % (self.BASE_URL, post.post_id, self.ACCESS_TOKEN)
-        data = urllib2.urlopen(url).read()
-        json = simplejson.loads(data)
-        if 'likes' in json:
-            likes = json['likes']['data']
-            for like in likes:
-                author = like['name']
-                author_id = like['id']
-                member = self.add_member(author, author_id)
-                try:
-                    like = Like.objects.get(member=member, post=post)
-                except Like.DoesNotExist:
-                    like = Like()
-                    like.post = post
-                    like.member = member
-                    like.save()
-
-
-    def fetch_posts(self, fetch_everything=False):
-        url = "%s/%s/feed?access_token=%s" % (self.BASE_URL, self.GROUP_ID, self.ACCESS_TOKEN)
-        if fetch_everything:
-            url = "%s&limit=99999999" % url
-        else:
-            url = "%s&limit=5" % url
+    def fetch_posts(self, url=None, fetch_everything=False):
+        if not url:
+            url = "%s/%s/feed?access_token=%s" % (self.BASE_URL, self.GROUP_ID, self.ACCESS_TOKEN)
         data = urllib2.urlopen(url).read()
         json = simplejson.loads(data)
         posts = json['data']
 
         for p in posts:
             self.add_post(p)
-        #if fetch_everything:
-            #if 'paging' in json:
-                #paging = json['paging']
-                #next_url = paging.get('next', None)
-                #if next_url:
-                    #self.stdout.write("Fetching next: %s" % next_url)
-                    #self.fetch_post(next_url)
+        if fetch_everything:
+            if 'paging' in json:
+                paging = json['paging']
+                next_url = paging.get('next', None)
+                if next_url:
+                    self.stdout.write("Fetching next: %s" % next_url)
+                    self.fetch_posts(next_url, fetch_everything=True)
 
 
     def handle(self, *args, **kwargs):
         self.stdout.write("Fetching..\n")
-        self.fetch_posts()
+        self.fetch_posts(fetch_everything=False)
         self.stdout.write("Done.\n")

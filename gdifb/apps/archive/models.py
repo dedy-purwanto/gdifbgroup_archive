@@ -31,11 +31,3 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('date_created',)
-
-class Like(models.Model):
-    post = models.ForeignKey(Post,related_name='likes')
-    member = models.ForeignKey(Member,related_name='likes')
-    date_created = models.DateTimeField(auto_now_add=True)
-    def __unicode__(self):
-        return "%s - %s..." % (self.member.name, self.post.message[:10])
-
