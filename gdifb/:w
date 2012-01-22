@@ -4,10 +4,8 @@
         margin:2px;
         display:block;
         min-height:100px;
-        width:700px;
+        width:400px;
         border:1px solid black;
-        margin-left:auto;
-        margin-right:auto;
 
     }
 
@@ -40,18 +38,13 @@
         {{post.member.name}}
     </div>
     <div id='message'>
-        {% if short %}
-        <a href='{% url 'posts:detail' post.pk %}'>{{post.message_short}}</a>
-        {% else %}
-        {{post.message}}
-
-        {% endif %}
+        <a href='{% url 'posts:detail' post.pk %}'>{{post.message}}</a>
     </div>
     <span id='time'>
         {{post.date_created}}
     </span>
     <span id='stat'>
         {{post.comments.all.count}} comments
-        {{post.num_likes}} likes
+        {{post.likes.all.count}} likes
     </span>
 </div>

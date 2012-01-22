@@ -17,11 +17,12 @@
     }
 
 </style>
-<div id='left_block'>
+<div id=''>
     [search form]<br />
-    {% include "posts/entries.html" with posts=posts %}
+    {% include "posts/entries.html" with posts=posts short='1' %}
 
 </div>
+{% comment %}
 <div id='right_block']
     statistic such as:
     <ol>
@@ -38,4 +39,5 @@
     </ol>
         all these link to more, let's put it in one page only, with anchor tag
 </div>
+{% endcomment %}
 {% endblock %}

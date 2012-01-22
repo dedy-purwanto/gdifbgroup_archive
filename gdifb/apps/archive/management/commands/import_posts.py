@@ -7,7 +7,7 @@ from archive.models import Post, Member, Like
 
 class Command(BaseCommand):
     #TODO: MOVE all this to settings
-    ACCESS_TOKEN = "AAACEdEose0cBAEQMMWHjuz9ORs9NItzrBg1wKEF5PABZCTxS5zFq8VcTXeJy1lMJ0hgJGe5GGvTJ6I6WGPufUDfLIPAm3fvHMilTRXgZDZD"
+    ACCESS_TOKEN = "AAACEdEose0cBAHMq8o20wE10VvCUorsQ9sCvssaPJKudXraGUrHhks3UNwZBTbZCAste3fqOW2BdRvUJF95OtOJxOJJGejQxAXoMv3cwZDZD"
     BASE_URL = "https://graph.facebook.com"
     GROUP_ID = "158948640832279"
 
@@ -45,6 +45,16 @@ class Command(BaseCommand):
             link = post_data['link']
         if 'link_name' in post_data:
             link_name = post_data['link_name']
+        likes = None
+        if 'likes' in post_data:
+            likes = post_data['likes']
+            if not isinstance(likes, int):
+                likes = post_data['likes']['count']
+
+        comments = None
+        if 'comments' in post_data:
+            comments = post_data['comments']['count']
+
 
         member = self.add_member(author, author_id)
 
@@ -63,6 +73,8 @@ class Command(BaseCommand):
             post.message = message
             post.date_created = date_created
             post.date_updated = date_updated
+            post.num_likes = likes
+            post.num_comments = comments
             if link:
                 post.link = link
             if link_name:
@@ -71,22 +83,28 @@ class Command(BaseCommand):
             self.stdout.write("New post added:%s\n" % post)
 
         if post_updated and post.parent is None:
-            self.fetch_comments_and_likes(post)
             post.date_updated = date_updated
+            post.num_likes = likes
+            post.num_comments = comments
             post.save()
+            self.fetch_comments_and_likes(post)
 
         return post
 
     def fetch_comments_and_likes(self, post):
         self.stdout.write("Fetching commets for post %s \n" % post.post_id)
-        url = "%s/%s?access_token=%s" % (self.BASE_URL, post.post_id, self.ACCESS_TOKEN)
+        url = "%s/%s_%s/comments?limit=5000&access_token=%s" % (self.BASE_URL, self.GROUP_ID, post.post_id, self.ACCESS_TOKEN)
         data = urllib2.urlopen(url).read()
         json = simplejson.loads(data)
-        if json['comments']['count'] > 0:
-            comments = json['comments']['data']
-            for c in comments:
-                self.add_post(c, parent=post)
+        if 'data' in json:
+            comments = json['data']
+            if len(comments) > 0:
+                for c in comments:
+                    self.add_post(c, parent=post)
 
+        url = "%s/%s/?access_token=%s" % (self.BASE_URL, post.post_id, self.ACCESS_TOKEN)
+        data = urllib2.urlopen(url).read()
+        json = simplejson.loads(data)
         if 'likes' in json:
             likes = json['likes']['data']
             for like in likes:
@@ -101,24 +119,26 @@ class Command(BaseCommand):
                     like.member = member
                     like.save()
 
-    def fetch_posts(self, url=None, fetch_everything=False):
-        if not url:
-            url = "%s/%s/feed?access_token=%s" % (self.BASE_URL, self.GROUP_ID, self.ACCESS_TOKEN)
-        if not url:
-            return
+
+    def fetch_posts(self, fetch_everything=False):
+        url = "%s/%s/feed?access_token=%s" % (self.BASE_URL, self.GROUP_ID, self.ACCESS_TOKEN)
+        if fetch_everything:
+            url = "%s&limit=99999999" % url
+        else:
+            url = "%s&limit=5" % url
         data = urllib2.urlopen(url).read()
         json = simplejson.loads(data)
         posts = json['data']
 
         for p in posts:
             self.add_post(p)
-        if fetch_everything:
-            if 'paging' in json:
-                paging = json['paging']
-                next_url = paging.get('next', None)
-                if next_url:
-                    self.stdout.write("Fetching next: %s" % next_url)
-                    self.fetch_post(next_url)
+        #if fetch_everything:
+            #if 'paging' in json:
+                #paging = json['paging']
+                #next_url = paging.get('next', None)
+                #if next_url:
+                    #self.stdout.write("Fetching next: %s" % next_url)
+                    #self.fetch_post(next_url)
 
 
     def handle(self, *args, **kwargs):
