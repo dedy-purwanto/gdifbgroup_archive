@@ -1,15 +1,31 @@
+from django.db import models
+class Member(models.Model):
+    member_id = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    def __unicode__(self):
+        return self.name
 
-#class Post(models.Model):
-    #parent = models.ForeignKey('self')
-    #post_id = models.CharField()
+class Post(models.Model):
+    parent = models.ForeignKey('self', null=True, related_name='comments')
+    post_id = models.CharField(max_length=255, unique=True)
 
-    #member = models.ForeignKey(Member)
-    #message = models.CharField()
+    member = models.ForeignKey(Member)
+    message = models.TextField()
+    link = models.TextField(blank=True, null=True)
+    link_name = models.TextField(blank=True, null=True)
     
-    #date_added = models.DateTimeField(auto_now_add=True)
-    #date_created = models.DateTimeField()
-    #date_updated = models.DateTimeField()
+    date_added = models.DateTimeField(auto_now_add=True) 
+    #FB date and time
+    date_created = models.DateTimeField()
+    date_updated = models.DateTimeField(null=True)
 
-#class Member(models.Model):
-    #member_id = models.CharField()
-    #name = models.CharField()
+    def __unicode__(self):
+        return "%s - %s..." % (self.member.name, self.message[:10])
+
+class Like(models.Model):
+    post = models.ForeignKey(Post)
+    member = models.ForeignKey(Member)
+    date_created = models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return "%s - %s..." % (self.member.name, self.post.message[:10])
+

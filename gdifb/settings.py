@@ -1,8 +1,13 @@
 # Django settings for gdifb project.
+import os
+import sys
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+
+sys.path.append(os.path.join(PROJECT_PATH, 'apps'))
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
+TEMPLATE_DEBUG = DEBUG 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -11,11 +16,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'fb_group_archive',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
+        'USER': 'postgres',                      # Not used with sqlite3.
         'PASSWORD': '123',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -116,9 +121,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+     'django.contrib.admindocs',
+    'archive',
 )
 
 # A sample logging configuration. The only tangible logging
