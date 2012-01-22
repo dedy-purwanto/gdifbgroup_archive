@@ -101,9 +101,7 @@ class Command(BaseCommand):
                     like.member = member
                     like.save()
 
-
-
-    def fetch_posts(self, url=None):
+    def fetch_posts(self, url=None, fetch_everything=False):
         if not url:
             url = "%s/%s/feed?access_token=%s" % (self.BASE_URL, self.GROUP_ID, self.ACCESS_TOKEN)
         if not url:
@@ -114,6 +112,14 @@ class Command(BaseCommand):
 
         for p in posts:
             self.add_post(p)
+        if fetch_everything:
+            if 'paging' in json:
+                paging = json['paging']
+                next_url = paging.get('next', None)
+                if next_url:
+                    self.stdout.write("Fetching next: %s" % next_url)
+                    self.fetch_post(next_url)
+
 
     def handle(self, *args, **kwargs):
         self.stdout.write("Fetching..\n")

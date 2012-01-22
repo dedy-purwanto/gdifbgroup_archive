@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<style type='text/css'>
+    #left_block{
+        width:40%;
+        border:1px solid black;
+        display:block;
+        float:left;
+
+    }
+    #right_block{
+        width:40%;
+        border:1px solid black;
+        display:block;
+        float:right;
+
+    }
+
+</style>
+<div id='left_block'>
+    [search form]<br />
+    {% include "posts/entries.html" with posts=posts %}
+
+</div>
+<div id='right_block']
+    statistic such as:
+    <ol>
+        <li>post count: {{thread_count}}</li>
+        <li>comments count: {{comment_count}}</li>
+        <li>top poster(5 top, then link to more)</li>
+        <li>top commenters (5 top, then link to more)</li>
+        <li>most liked posts:(5 top, then link to more)</li>
+        <li>most liked comments(5 top then link to more)</li>
+        <li>popular posters(5 top then link to more): member who got most liked on their posts </li>
+        <li>popular commenters(5 top then link to more): member who got most liked on their comments </li>
+        <li>most commented post (5 top then link to more)</li>
+        <li>most mentioned:(5 top then link to more): member who are mentioned in posts &amp; comments</li>
+    </ol>
+        all these link to more, let's put it in one page only, with anchor tag
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include "posts/entry.html" with post=post %}
+<div id='post_stat'>
+    Comments: {{post.comments.all.count}}<br />
+    Most liked comments: <br />
+    Most mentioned: <br />
+
+</div>
+
+{% if post.comments.exists %}
+Comments:
+{% include "posts/entries.html" with posts=post.comments.all %}
+{% endif %}
+
+{% endblock %}

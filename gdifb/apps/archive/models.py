@@ -9,7 +9,7 @@ class Post(models.Model):
     parent = models.ForeignKey('self', null=True, related_name='comments')
     post_id = models.CharField(max_length=255, unique=True)
 
-    member = models.ForeignKey(Member)
+    member = models.ForeignKey(Member, related_name='posts')
     message = models.TextField()
     link = models.TextField(blank=True, null=True)
     link_name = models.TextField(blank=True, null=True)
@@ -22,9 +22,12 @@ class Post(models.Model):
     def __unicode__(self):
         return "%s - %s..." % (self.member.name, self.message[:10])
 
+    class Meta:
+        ordering = ('date_created',)
+
 class Like(models.Model):
-    post = models.ForeignKey(Post)
-    member = models.ForeignKey(Member)
+    post = models.ForeignKey(Post,related_name='likes')
+    member = models.ForeignKey(Member,related_name='likes')
     date_created = models.DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return "%s - %s..." % (self.member.name, self.post.message[:10])

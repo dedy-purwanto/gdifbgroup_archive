@@ -1,0 +1,19 @@
+{% load url from future %}
+<div id='post'>
+    <span id='author_pic'>
+        <img src='http://graph.facebook.com/{{post.member.member_id}}/picture' />
+    </span>
+    <span id='author'>
+        {{post.member.name}}
+    </span>
+    <span id='message'>
+        <a href='{% url 'posts:detail' post.pk %}'>{{post.message}}</a>
+    </span>
+    <span id='time'>
+        {{post.date_created}}
+    </span>
+    <span id='post_stat'>
+        {{post.comments.all.count}} comments
+        {{post.likes.all.count}} likes
+    </span>
+</div>
