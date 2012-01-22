@@ -8,7 +8,9 @@
 {% include "posts/entry.html" with post=post show_fbpostlink='1' show_parentlink='1' %}
 
 {% if post.comments.exists %}
+<div style='display:block;width:90%;margin-left:auto;margin-right:auto;'>
 {% include "posts/entries.html" with posts=post.comments.all show_permalink='1' %}
+</div>
 {% else %}
     No comments yet
 

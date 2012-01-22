@@ -16,7 +16,6 @@
         float:right;
 
     }
-
 </style>
 <div id='posts'>
     {% include "search/form.html" with form=form %}
@@ -24,7 +23,10 @@
 
 
 </div>
+<p align='center'>
 <a href='#' id='more_posts'>Load More</a>
+<br /><br />
+</p>
 
 {% comment %}
 <div id='right_block']
@@ -53,8 +55,12 @@
         $("#more_posts").click(function(){
             posts_div = $("#posts");
             $.get("{% url 'posts:list'%}?offset=" + (offset + 15), function(data){
-                posts_div.html(posts_div.html() + data);
-                offset += 15;
+                if(data.length > 10){
+                    posts_div.html(posts_div.html() + data);
+                    offset += 15;
+                }else{
+                    $("#more_posts").hide();
+                }
             });
             return false;
         });

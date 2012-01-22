@@ -1,5 +1,27 @@
 {% load url from future %}
+<style type='text/css'>
+    #search{
+        width:100%;
+        display:block;
+    }
+    #search #id_keyword{
+        font-family:'Cabin',sans-serif;
+        font-size:14px;
+        width:70%;
+        padding:10px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        border:1px solid #C2CEDA;
+        box-shadow:2px 3px 2px #B3BBC3;
+        -webkit-box-shadow:2px 3px 2px #B3BBC3;
+        -moz-box-shadow:2px 3px 2px #B3BBC3;
+    }
+
+</style>
+<div id='search'>
 <form method='GET' action='/'>
     Search: {{form.keyword}}
     {%csrf_token%}
 </form>
+</div>

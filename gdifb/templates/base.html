@@ -4,14 +4,33 @@
     <head>
         <meta charset="utf-8"/>
         <title>Gamedevid FB Group Archive{% block title %}{% endblock %}</title>
+        <link href='http://fonts.googleapis.com/css?family=Cabin:400,500,400italic,500italic' rel='stylesheet' type='text/css'>
         <style type='text/css'>
+            body{
+                background-color:#DDE0E3;
+
+            }
             #content{
-                font-family:Ubuntu, Verdana;
+                font-family:'Cabin', sans-serif;
                 font-size:12px;
-                width:50%;
-                border:1px solid black;
+                font-weight:500;
+                width:600px;
                 margin-left:auto;
                 margin-right:auto;
+            }
+            hr{
+                width:100%;
+                border:1px solid #c2ceda;
+                height:1px;
+            }
+            a, a:visited{
+                color:#4076AC;
+                text-decoration:none;
+
+            }
+            a:hover{
+                text-decoration:underline;
+
             }
 
         </style>
@@ -22,9 +41,16 @@
     </head>
     <body lang="en">
         <div id='content'>
+            <p align='center'>
+            <h1><a href='/'>GameDevID Facebook Group Archive</a></h1>
+            </p>
         {% block content %}
 
         {% endblock %}
+        <div align='center' style='text-align:center'>
+        <hr />
+         -- bong? --
+         </div>
         </div>
 
         {% block js %}
